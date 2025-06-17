@@ -1,0 +1,97 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const SignInAdmin: React.FC = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isSmallScreen = screenWidth < 768;
+
+  const handleSignIn = async () => {
+    setError('');
+    if (!email || !password) {
+      setError('Please enter email and password.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:3001/api/v1/users/signin', { email, password });
+      if (response.data.success) {
+        localStorage.setItem('userId', response.data.userId); // store userId instead of email
+        navigate('/otp');
+      } else {
+        setError(response.data.message || 'Signin failed.');
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.response?.data?.message || 'An error occurred during signin.');
+    }
+  };
+
+  return (
+    <div className="d-flex flex-column min-vh-100" style={{ fontFamily: 'Arial, sans-serif' }}>
+      <div className="d-flex flex-column justify-content-center align-items-center"
+        style={{
+          background: '#000F5A',
+          borderTopLeftRadius: '25%',
+          borderBottomRightRadius: '25%',
+          paddingTop: isSmallScreen ? '40px' : '80px',
+          paddingBottom: isSmallScreen ? '40px' : '80px',
+        }}>
+        <h1 className="fw-bold text-white mb-2" style={{ fontSize: isSmallScreen ? '48px' : '64px' }}>KOSH</h1>
+        <p className="text-white mb-0" style={{ fontSize: isSmallScreen ? '16px' : '20px' }}>Sign in to your account</p>
+      </div>
+
+      <div className="flex-grow-1 d-flex flex-column justify-content-start align-items-center p-3" style={{ background: '#fff' }}>
+        <h2 className="fw-bold mb-4" style={{ fontSize: isSmallScreen ? '24px' : '32px', color: '#000F5A', marginTop: isSmallScreen ? '20px' : '40px' }}>Sign in</h2>
+
+        <div className="d-flex flex-column align-items-center text-dark pb-4" style={{ width: isSmallScreen ? '280px' : '320px' }}>
+          <input type="email" placeholder="Admin Email" value={email} onChange={(e) => setEmail(e.target.value)}
+            className="form-control mb-2"
+            style={{ padding: isSmallScreen ? '12px' : '15px', border: '2px solid #000F5A', borderRadius: '10px', fontSize: isSmallScreen ? '14px' : '16px', fontWeight: 'bold', outline: 'none' }}
+          />
+
+          <div className="position-relative w-100">
+            <input type={showPassword ? 'text' : 'password'} placeholder="Password" value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-control"
+              style={{ padding: isSmallScreen ? '12px' : '15px', paddingRight: '50px', border: '2px solid #ccc', borderRadius: '10px', fontSize: isSmallScreen ? '14px' : '16px', outline: 'none' }}
+            />
+            <span onClick={() => setShowPassword(!showPassword)} className="position-absolute translate-middle-y"
+              style={{ right: '15px', top: '50%', cursor: 'pointer', fontSize: isSmallScreen ? '18px' : '20px', color: '#A9A9A9' }}>
+              {showPassword ? '👁️' : '👁️‍🗨️'}
+            </span>
+          </div>
+
+          {error && <div className="text-danger fs-6 mt-2 w-100">{error}</div>}
+
+          <button onClick={handleSignIn} className="btn btn-primary d-flex justify-content-center align-items-center gap-2 mt-3 w-100"
+            style={{ background: '#000F5A', color: '#fff', padding: isSmallScreen ? '12px' : '15px', border: 'none', borderRadius: '25px', fontSize: isSmallScreen ? '14px' : '16px', fontWeight: 500 }}>
+            Sign in <span style={{ fontSize: isSmallScreen ? '18px' : '20px' }}>→</span>
+          </button>
+
+          <div className="text-center mt-3" style={{ fontSize: isSmallScreen ? '14px' : '16px', color: '#000F5A' }}>
+            Don’t have an account? <span style={{ textDecoration: 'underline', cursor: 'pointer', color: '#000F5A', fontWeight: 'bold' }}
+              onClick={() => navigate('/signup')}>
+              Sign up
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SignInAdmin;
