@@ -58,7 +58,7 @@ const SignInAdmin: React.FC = () => {
         <h2 className="fw-bold mb-4" style={{ fontSize: isSmallScreen ? '24px' : '32px', color: '#000F5A', marginTop: isSmallScreen ? '20px' : '40px' }}>Sign in</h2>
 
         <div className="d-flex flex-column align-items-center text-dark pb-4" style={{ width: isSmallScreen ? '280px' : '320px' }}>
-          <input type="email" placeholder="Admin Email" value={email} onChange={(e) => setEmail(e.target.value)}
+          <input type="email" placeholder=" Email" value={email} onChange={(e) => setEmail(e.target.value)}
             className="form-control mb-2"
             style={{ padding: isSmallScreen ? '12px' : '15px', border: '2px solid #000F5A', borderRadius: '10px', fontSize: isSmallScreen ? '14px' : '16px', fontWeight: 'bold', outline: 'none' }}
           />
