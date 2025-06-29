@@ -18,10 +18,10 @@ const OTPRequest: React.FC<Props> = ({ onNext }) => {
     <div style={styles.container}>
       <img src="/otp.png" alt="OTP illustration" style={styles.image} />
       <h2 style={styles.title}>OTP Verification</h2>
-      <p style={styles.subtitle}>We will send a one-time password to this mobile number</p>
+      <p style={styles.subtitle}>We will send a one-time password to this email</p>
       <input
         type="text"
-        placeholder="Enter Mobile Number"
+        placeholder="Enter email"
         value={mobile}
         onChange={(e) => setMobile(e.target.value)}
         style={styles.input}
